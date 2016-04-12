@@ -11,7 +11,7 @@ import java.net.Socket;
  */
 public class Client implements Runnable {
     protected static InetAddress addr;
-    protected static UI frame;
+    protected UI frame;
     private BufferedReader in;
     private PrintWriter out;
     protected static Socket socket;
