@@ -1,12 +1,11 @@
 package client;
 
 import javax.swing.*;
+import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
-
-import static client.Client.socket;
+import java.io.IOException;
 
 /**
  * Created by DScoder on 10.04.2016.
@@ -14,7 +13,7 @@ import static client.Client.socket;
 public class UI extends JFrame {
 
     protected JTextArea textArea;
-    protected PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+    public EventListenerList listenerList = new EventListenerList();
 
 
     public UI() throws IOException {
@@ -33,9 +32,10 @@ public class UI extends JFrame {
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                out.println(userText.getText());
+                String text = userText.getText();
                 userText.setText("");
 
+                fireTextEvent(new TextEvent(this,text));
             }
         });
         messagePanel.add(sendButton, BorderLayout.EAST);
@@ -43,6 +43,24 @@ public class UI extends JFrame {
 
 
         setVisible(true);
+    }
+
+    public void fireTextEvent(TextEvent event){
+        Object[] listeners = listenerList.getListenerList();
+
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == TextListener.class){
+                ((TextListener)listeners[i+1]).textEventOccured(event);
+            }
+        }
+    }
+
+    public void addTextListener(TextListener listener){
+        listenerList.add(TextListener.class, listener);
+    }
+
+    public void removeTextListener(TextListener listener){
+        listenerList.remove(TextListener.class, listener);
     }
 
     public void setText(String message) {

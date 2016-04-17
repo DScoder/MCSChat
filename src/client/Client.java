@@ -14,15 +14,22 @@ public class Client implements Runnable {
     protected UI frame;
     private BufferedReader in;
     private PrintWriter out;
-    protected static Socket socket;
+    protected Socket socket;
 
     public Client() throws IOException {
         addr = InetAddress.getByName(null);
         socket = new Socket(addr, ServerSide.PORT);
         frame = new UI();
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = frame.out;
+        out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
 
+        frame.addTextListener(new TextListener(){
+            @Override
+            public void textEventOccured(client.TextEvent event) {
+                String text = event.getText();
+                out.println(text);
+            }
+        });
     }
 
     @Override
