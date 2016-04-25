@@ -40,7 +40,6 @@ public class ServerSide implements Runnable {
             } catch (IOException e) {
 
             }
-
         }
     }
 }

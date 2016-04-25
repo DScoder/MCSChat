@@ -8,16 +8,17 @@ import java.net.Socket;
  */
 public class ServerClientHandler extends Thread {
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private DataInputStream in;
+    private DataOutputStream out;
     private int number;
 
     public ServerClientHandler(Socket s) throws IOException {
         socket = s;
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+        out = new DataOutputStream(socket.getOutputStream());
+        in = new DataInputStream(socket.getInputStream());
         number = ServerSide.clientNumber;
-        out.println("Hello, User #" + ServerSide.clientNumber + ". Tipe 'exit' for close this chat. =)");
+        out.writeUTF("Hello, User #" + ServerSide.clientNumber + ". Tipe 'exit' for close this chat. =)");
+        out.flush();
         start();
     }
 
@@ -25,11 +26,12 @@ public class ServerClientHandler extends Thread {
         try {
             while (true) {
                 try {
-                    String str = in.readLine();
+                    String str = in.readUTF();
                     if (str.equals("exit")) {
                         break;
                     }
-                    out.println("User" + number + ": " + str);
+                    out.writeUTF("User" + number + ": " + str);
+                    out.flush();
                     ServerSide.frame.setText("User" + number + ": " + str);
                 } catch (NullPointerException e) {
                     break;
@@ -41,6 +43,7 @@ public class ServerClientHandler extends Thread {
         } finally {
             try {
                 socket.close();
+                System.out.println("Socket " + number + " was closed");
             } catch (IOException e) {
                 e.printStackTrace();
             }

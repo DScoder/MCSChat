@@ -50,7 +50,11 @@ public class UI extends JFrame {
 
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == TextListener.class){
-                ((TextListener)listeners[i+1]).textEventOccured(event);
+                try {
+                    ((TextListener)listeners[i+1]).textEventOccured(event);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
