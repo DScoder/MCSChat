@@ -20,13 +20,28 @@ public class UI extends JFrame {
         setTitle("Chat");
         setLocation(600, 50);
         setSize(400, 300);
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
 
         textArea = new JTextArea();
-        add(textArea);
+        textArea.setEnabled(false);
+        textArea.setDisabledTextColor(Color.BLACK);
+        JScrollPane jsp = new JScrollPane(textArea);
+        jsp.setAutoscrolls(true);
+        textArea.setAutoscrolls(true);
+        add(jsp, BorderLayout.CENTER);
 
         final JPanel messagePanel = new JPanel(new BorderLayout());
         final JTextField userText = new JTextField();
+        userText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = userText.getText();
+                userText.setText("");
+                userText.setCaretPosition(userText.getDocument().getLength());
+                fireTextEvent(new TextEvent(this,text));
+            }
+        });
         messagePanel.add(userText);
         JButton sendButton = new JButton("SEND");
         sendButton.addActionListener(new ActionListener() {
@@ -34,7 +49,7 @@ public class UI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String text = userText.getText();
                 userText.setText("");
-
+                userText.setCaretPosition(userText.getDocument().getLength());
                 fireTextEvent(new TextEvent(this,text));
             }
         });

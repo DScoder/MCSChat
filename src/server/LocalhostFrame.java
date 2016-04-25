@@ -1,6 +1,7 @@
 package server;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by DScoder on 10.04.2016.
@@ -15,6 +16,8 @@ public class LocalhostFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         textArea = new JTextArea();
+        textArea.setEnabled(false);
+        textArea.setDisabledTextColor(Color.BLACK);
         add(textArea);
 
         setVisible(true);

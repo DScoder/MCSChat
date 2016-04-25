@@ -2,6 +2,8 @@ package client;
 
 import server.ServerSide;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -29,6 +31,19 @@ public class Client implements Runnable {
                 String text = event.getText();
                 out.writeUTF(text);
                 out.flush();
+            }
+        });
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                try {
+                    out.writeUTF("exit");
+                    out.flush();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
     }
